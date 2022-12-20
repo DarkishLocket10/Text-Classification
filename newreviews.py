@@ -10,14 +10,18 @@ data_file = tar.extractfile('aclImdb/train/labeledBow.feat')
 
 # Load the data file into a pandas dataframe
 df = pd.read_csv(data_file,
-                 header=None,
-                 names=['review', 'sentiment'],
-                 sep=' ',
-                 quoting=3)
+                 header=0,
+                 sep='\t',
+                 quotechar='"')
 
-# Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(df["review"], df["sentiment"], test_size=0.33, random_state=42)
 
+# Check if the 'sentiment' column exists in the dataframe
+if 'sentiment' in df:
+    # Split the data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(df['review'], df['sentiment'], test_size=0.33, random_state=42)
+else:
+    print("The 'sentiment' column does not exist in the dataframe.")
+    
 # Create a CountVectorizer to turn the texts into numerical feature vectors
 vectorizer = CountVectorizer()
 train_vectors = vectorizer.fit_transform(X_train)
